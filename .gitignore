@@ -22,4 +22,4 @@ pnpm-debug.log*
 *.sw?
 
 # python cache
-__pycache/
+__pycache__/
