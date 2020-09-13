@@ -79,10 +79,10 @@
                             </van-cell>
                         </van-cell-group>
                     </van-radio-group>
-                    <div v-show="textDisplayBoolean()">
+                    <div style="margin-top:5%;" v-show="textDisplayBoolean()">
                         背面文字：<van-form ref="boxFormRef" validate-first>
                             <van-field v-model="front_box" name="front_box" label="" placeholder="输入您想展示的文字"
-                                maxlength="32" show-word-limit :rules="[{ required: true, message: '请务必输入文字信息哦' }]" />
+                                maxlength="7" show-word-limit :rules="[{ required: true, message: '请务必输入文字信息哦' }]" />
                         </van-form>
                     </div>
 
@@ -138,8 +138,8 @@
             return {
                 pickup_code: "",
 
-                normalPreviewImgURL: "http://via.placeholder.com/600x375",
-                vipPreviewImgURL: "http://via.placeholder.com/601x375",
+                normalPreviewImgURL: "http://c2m.tq.yhlcps.com/statics/c2m/general_cardcase_preview.jpg",
+                vipPreviewImgURL: "http://c2m.tq.yhlcps.com/statics/c2m/vip_cardcase_preview.jpg",
 
                 // 步骤导航条控制
                 stepNumber: 0,
@@ -155,7 +155,7 @@
                 user_openid: "user_open_id",
 
                 // Form Data Box
-                front_box: "这是一条默认文字",
+                front_box: "5G智能制造",
 
                 imageSelectedBox1: "china_telecom",
                 imageSelectedBox2: "",
@@ -242,7 +242,7 @@
             onClickGenerateOrder_dialog(code) {
                 this.$dialog.alert({
                     title: '您本次的取件码为:' + code,
-                    message: '<p>您可以继续进行的操作：</p><p>1. 在本公众号中回复取件码获取本订单详情</p><p>2. 在公众号中回复“订单”获取您的所有订单</p>',
+                    message: '<p>您可以继续进行的操作：</p><p>1. 公众号回复“取件码”获取订单详情</p><p>2. 公众号中回复“订单”获取您的订单</p>',
                     theme: 'round-button',
                 }).then(() => {
                     this.$router.push("/close_page");

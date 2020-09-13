@@ -20,18 +20,24 @@
                 <!-- 1. 第一个步骤，选择正面打印图片(固定) -->
                 <div v-if="stepNumber == 0">
                     <!-- 图片选择区域 -->
-                    <van-radio-group v-model="imageSelectedBox1">
-                        <van-cell-group>
-                            <van-cell clickable @click="radio = '1'">
-                                <van-radio name="china_telecom">
-                                    <van-image height="100" fit="scale-down"
-                                        src="http://c2m.tq.yhlcps.com/statics/image/china_telecom.jpeg">
-                                        <template v-slot:error>加载失败</template>
-                                    </van-image>
-                                </van-radio>
-                            </van-cell>
-                        </van-cell-group>
-                    </van-radio-group>
+                    <div>
+                        <van-radio-group v-model="imageSelectedBox1">
+                            <van-cell-group>
+                                <van-cell clickable @click="radio = '1'">
+                                    <van-radio name="china_telecom">
+                                        <van-image height="100" fit="scale-down"
+                                            src="http://c2m.tq.yhlcps.com/statics/image/china_telecom.jpeg">
+                                            <template v-slot:error>加载失败</template>
+                                        </van-image>
+                                    </van-radio>
+                                </van-cell>
+                            </van-cell-group>
+                        </van-radio-group>
+                        <!-- 产品预览区域 -->
+                        <van-image class="normalFrontImg" width="100%" fit="scale-down" :src="normalFrontImgURL">
+                            <template v-slot:error>加载失败</template>
+                        </van-image>
+                    </div>
                     <!-- 底部导航区域 -->
                     <van-tabbar>
                         <van-tabbar-item> </van-tabbar-item>
@@ -46,35 +52,43 @@
                 </div>
                 <!-- 2. 第二个步骤 -->
                 <div v-if="stepNumber == 1">
-                    <p>请选择其中一种，作为产品的背面信息。目前可打印文字信息与图片</p>
-                    <van-radio-group v-model="imageSelectedBox2">
-                        <van-cell-group>
-                            <!-- 2.1 图片选择(目前别无选择就一张) -->
-                            <van-cell clickable @click="radio = '1'">
-                                <van-radio name="image">
-                                    图片
-                                </van-radio>
-                            </van-cell>
-                            <!-- 2.2 文字输入 -->
-                            <van-cell clickable @click="radio = '1'">
-                                <van-radio name="text">
-                                    文字
-                                </van-radio>
-                            </van-cell>
+                    <div>
+                        <p>请选择其中一种，作为产品的背面信息。目前可打印文字信息与图片</p>
+                        <van-radio-group v-model="imageSelectedBox2">
+                            <van-cell-group>
+                                <!-- 2.1 图片选择(目前别无选择就一张) -->
+                                <van-cell clickable @click="radio = '1'">
+                                    <van-radio name="image">
+                                        图片
+                                    </van-radio>
+                                </van-cell>
+                                <!-- 2.2 文字输入 -->
+                                <van-cell clickable @click="radio = '1'">
+                                    <van-radio name="text">
+                                        文字
+                                    </van-radio>
+                                </van-cell>
 
-                        </van-cell-group>
-                    </van-radio-group>
-                    <div v-show="textDisplayBoolean()">
-                        背面文字：<van-form ref="boxFormRef" validate-first>
-                            <van-field v-model="front_box" name="front_box" label="" placeholder="输入您想展示的文字"
-                                maxlength="32" show-word-limit :rules="[{ required: true, message: '请务必输入文字信息哦' }]" />
-                        </van-form>
-                    </div>
+                            </van-cell-group>
+                        </van-radio-group>
+                        <div style="margin-top:5%;" v-show="textDisplayBoolean()">
+                            背面文字：<van-form ref="boxFormRef" validate-first>
+                                <van-field v-model="front_box" name="front_box" label="" placeholder="输入您想展示的文字"
+                                    maxlength="14" show-word-limit
+                                    :rules="[{ required: true, message: '请务必输入文字信息哦' }]" />
+                            </van-form>
+                        </div>
 
-                    <div v-show="imageDisplayBoolean()">
-                        背面图片：
-                        <van-image height="100" fit="scale-down"
-                            src="http://c2m.tq.yhlcps.com/statics/image/meet_future.jpeg" />
+                        <div v-show="imageDisplayBoolean()">
+                            背面图片：
+                            <van-image height="100" fit="scale-down"
+                                src="http://c2m.tq.yhlcps.com/statics/image/meet_future.jpeg" />
+                        </div>
+                        <!-- 产品预览区域 -->
+                        <van-image class="normalBackImgURL" width="100%" fit="scale-down" :src="normalBackImgURL">
+                            <template v-slot:error>加载失败</template>
+                        </van-image>
+
                     </div>
 
                     <!-- 底部导航 -->
@@ -95,16 +109,7 @@
                 </div>
                 <!-- 3. 第三个步骤 -->
                 <div v-if="stepNumber == 2">
-                    <!-- 假装是一个预览图 -->
-                    <!-- <van-image height="100" fit="scale-down" :src="require('../assets/test.png')"
-                        @click="showFlutterWeb">
-                        <template v-slot:loading>
-                            <van-loading type="spinner" size="20" />
-                        </template>
-                        <template v-slot:error>预览图加载失败</template>
-                    </van-image> -->
                     <p>请点击右下角的“生成工单”按钮以产生工单～</p>
-
                     <!-- 底部导航 -->
                     <van-tabbar>
                         <van-tabbar-item>
@@ -135,6 +140,8 @@
                 leftText: "",
                 flag: false,
                 pickup_code: "",
+                normalFrontImgURL: "http://c2m.tq.yhlcps.com/statics/c2m/general_cardcase_front_preview.jpg",
+                normalBackImgURL: "http://c2m.tq.yhlcps.com/statics/c2m/general_cardcase_back_preview.jpg",
 
                 // 步骤导航条控制
                 stepNumber: 0,
@@ -164,7 +171,7 @@
                 imageFileContent: "",
 
                 // Form Data Box
-                front_box: "这是一条默认文字",
+                front_box: "5G智能制造",
                 // reverse_box: "tq_film_1",
                 testBoolean: true,
 
@@ -201,6 +208,13 @@
                     return false
                 }
             },
+            normalPreviewImgDisplay() {
+                if (this.productType == "名片夹") {
+                    return true
+                } else {
+                    return false
+                }
+            },
             showFlutterWeb() {
                 this.$router.push('/flutterweb');
             },
@@ -224,7 +238,7 @@
             onClickGenerateOrder_dialog(code) {
                 this.$dialog.alert({
                     title: '您本次的取件码为:' + code,
-                    message: '<p>您可以继续进行的操作：</p><p>1. 在本公众号中回复取件码获取本订单详情</p><p>2. 在公众号中回复“订单”获取您的所有订单</p>',
+                    message: '<p>您可以继续进行的操作：</p><p>1. 公众号回复“取件码”获取订单详情</p><p>2. 公众号中回复“订单”获取您的订单</p>',
                     theme: 'round-button',
                 }).then(() => {
                     this.$router.push("/close_page");
@@ -469,4 +483,16 @@
     };
 </script>
 
-<style scoped></style>
+<style scoped>
+    /* .normalFrontImg {
+        position: fixed;
+        bottom: 10%;
+        left: 25%;
+    }
+
+    .normalBackImg {
+        position: fixed;
+        bottom: 10%;
+        left: 25%;
+    } */
+</style>

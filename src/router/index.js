@@ -6,8 +6,10 @@ import End from "@/components/End.vue";
 // import CutPic from "@/components/CutPic.vue";
 import FlutterApp from "@/components/FlutterApp.vue";
 import Ad from "@/components/Ad.vue";
+import Ad_VIP from "@/components/Ad_VIP.vue";
 import SuperUserEntry from "@/components/SuperUserEntry.vue";
 import ClosePage from "@/components/ClosePage.vue";
+import RedirectForVIP from "@/components/RedirectForVIP.vue";
 
 Vue.use(VueRouter);
 
@@ -17,8 +19,17 @@ const routes = [
     component: Login,
   },
   {
-    path: "/super/:openid",
+    path: "/super/eaac28c5-15e5-4486-b37e-e2281a7e31a6",
+    // component: SuperUserEntry,
+    component: RedirectForVIP,
+  },
+  {
+    path: "/vip/:openid",
     component: SuperUserEntry,
+  },
+  {
+    path: "/vip_ad/:openid",
+    component: Ad_VIP,
   },
   {
     path: "/close_page",
