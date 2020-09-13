@@ -142,9 +142,6 @@
     export default {
         data() {
             return {
-                constantCondition: false,
-                leftText: "",
-                flag: false,
                 pickup_code: "",
                 normalFrontImgURL: "http://c2m.tq.yhlcps.com/statics/c2m/general_cardcase_front_preview.jpg",
                 normalBackImgURL: "http://c2m.tq.yhlcps.com/statics/c2m/general_cardcase_back_preview.jpg",
@@ -165,32 +162,14 @@
                 // Form Data
                 user_openid: "",
 
-                // FormData Card
-                body_name_card: "",
-                cor_name_card: "",
-                cor_addr_card: "",
-                cor_phone_card: "",
-                cor_email_card: "",
-
-                uploadImageName: "",
-
-                imageFileContent: "",
-
                 // Form Data Box
                 front_box: "5G智能制造",
                 // reverse_box: "tq_film_1",
                 testBoolean: true,
 
-                // Form Data Keychain
-                reverse_keychain: "tq_film_5",
-
-                imageSelectedCard: "1",
                 imageSelectedBox1: "china_telecom",
                 imageSelectedBox2: "",
                 imageSelectedKeyChain: "1",
-
-                uploaderCardImageFlag: false,
-                uploaderCardImageList: [],
             };
         },
 
@@ -221,9 +200,6 @@
                     return false
                 }
             },
-            showFlutterWeb() {
-                this.$router.push('/flutterweb');
-            },
             onClickConfirmProductType() {
                 this.stepNumber += 1;
             },
@@ -232,7 +208,7 @@
                 this.stepNumber -= 1;
             },
 
-            async onClickConfirmProductInfo() {
+            onClickConfirmProductInfo() {
                 if (this.imageSelectedBox2) {
                     this.stepNumber += 1;
                 } else {
@@ -255,235 +231,69 @@
             onClickGenerateOrder() {
                 var temOpenId = this.user_openid;
 
-                if (this.productType == "名片") {
-                    this.$dialog
-                        .confirm({
-                            title: "生成工单",
-                            message: "是否确认下单",
-                        })
-                        .then(async () => {
-                            // on confirm
-                            const draw_info = {
-                                body_name: this.body_name_card,
-                                cor_name: this.cor_name_card,
-                                cor_addr: this.cor_addr_card,
-                                cor_phone: this.cor_phone_card,
-                                cor_email: this.cor_email_card,
-                                filename: this.uploadImageName,
-                            };
+                this.$dialog
+                    .confirm({
+                        title: "生成工单",
+                        message: "是否确认下单",
+                    })
+                    .then(async () => {
+                        // on confirm
+                        var data = ""
+                        if (this.imageSelectedBox2 === "text") {
+                            data = this.front_box
+                        } else if (this.imageSelectedBox2 === "image") {
+                            data = "logo2"
+                        } else {
+                            this.$toast("解析上传信息时遇到了未知错误");
+                            return
+                        }
+                        const draw_info = {
+                            data: data
+                        };
 
-                            console.log("draw_info:\n", draw_info);
+                        console.log("draw_info:\n", draw_info);
 
-                            const orderForm = {
-                                user_openid: this.user_openid,
-                                goods_type: this.productType,
-                                draw_info: draw_info,
-                            };
+                        const orderForm = {
+                            user_openid: this.user_openid,
+                            goods_type: this.productType,
+                            draw_info: draw_info,
+                        };
 
-                            console.log(orderForm);
+                        console.log(orderForm);
 
-                            const { data: res } = await this.$http.post(
-                                this.orderCreateUrl,
-                                orderForm
-                            );
+                        // if (this.constantCondition) {
+                        const { data: res } = await this.$http.post(
+                            this.orderCreateUrl,
+                            orderForm
+                        );
 
-                            // 如果取到的status是200以外的数，或取到的status是undefined
-                            if (res.meta.status != 200) {
-                                this.$toast("订单生成失败请稍后再试");
-                                this.$route.push("/login/" + temOpenId);
-                                return;
-                            }
+                        // 如果取到的status是200以外的数，或取到的status是undefined
+                        if (res.meta.status != 200) {
+                            this.$toast("订单生成失败请稍后再试");
+                            this.$route.push("/login/" + temOpenId);
+                            return;
+                        }
 
-                            this.pickup_code = res.data.pickup_code;
-                            console.log("pickup_code: ", this.pickup_code);
-                            // 数据初始化
-                            this.clearAllFormData();
-                            this.$toast("上传成功");
+                        var pickup_code = res.data.pickup_code;
+                        console.log("pickup_code: ", pickup_code);
+                        // 数据初始化
 
-                            // this.$router.push("/end/" + pickup_code);
-                            // this.$toast("订单生成完毕！");
-                            this.onClickGenerateOrder_dialog()
-                            console.log(res);
-                        })
-                        .catch(() => {
-                            // on cancel
-                        });
-                } else if (this.productType == "名片夹") {
-                    this.$dialog
-                        .confirm({
-                            title: "生成工单",
-                            message: "是否确认下单",
-                        })
-                        .then(async () => {
-                            // on confirm
-                            var data = ""
-                            if (this.imageSelectedBox2 === "text") {
-                                data = this.front_box
-                            } else if (this.imageSelectedBox2 === "image") {
-                                data = "logo2"
-                            } else {
-                                this.$toast("解析上传信息时遇到了未知错误");
-                                return
-                            }
-                            const draw_info = {
-                                data: data
-                            };
+                        this.onClickGenerateOrder_dialog(pickup_code)
+                    })
+                    .catch(() => {
+                        // on cancel
+                    });
 
-                            console.log("draw_info:\n", draw_info);
-
-                            const orderForm = {
-                                user_openid: this.user_openid,
-                                goods_type: this.productType,
-                                draw_info: draw_info,
-                            };
-
-                            console.log(orderForm);
-
-                            // if (this.constantCondition) {
-                            const { data: res } = await this.$http.post(
-                                this.orderCreateUrl,
-                                orderForm
-                            );
-
-                            // 如果取到的status是200以外的数，或取到的status是undefined
-                            if (res.meta.status != 200) {
-                                this.$toast("订单生成失败请稍后再试");
-                                this.$route.push("/login/" + temOpenId);
-                                return;
-                            }
-
-                            var pickup_code = res.data.pickup_code;
-                            console.log("pickup_code: ", pickup_code);
-                            // 数据初始化
-
-                            this.onClickGenerateOrder_dialog(pickup_code)
-                        })
-                        .catch(() => {
-                            // on cancel
-                        });
-
-                } else if (this.productType == "钥匙扣") {
-                    this.$dialog
-                        .confirm({
-                            title: "生成工单",
-                            message: "是否确认下单",
-                        })
-                        .then(async () => {
-                            // on confirm
-                            const draw_info = {
-                                reverse: this.imageSelectedKeyChain,
-                            };
-
-                            console.log("draw_info:\n", draw_info);
-
-                            const orderForm = {
-                                user_openid: this.user_openid,
-                                goods_type: this.productType,
-                                draw_info: draw_info,
-                            };
-
-                            console.log(orderForm);
-
-                            const { data: res } = await this.$http.post(
-                                this.orderCreateUrl,
-                                orderForm
-                            );
-
-                            // 如果取到的status是200以外的数，或取到的status是undefined
-                            if (res.meta.status != 200) {
-                                this.$toast("订单生成失败请稍后再试");
-                                this.$route.push("/login/" + temOpenId);
-                                return;
-                            }
-
-                            this.pickup_code = res.data.pickup_code;
-                            console.log("pickup_code: ", this.pickup_code);
-                            // 数据初始化
-                            this.clearAllFormData();
-
-                            this.$toast("上传成功");
-
-                            // this.$route.push("/login/" + temOpenId);
-                            this.$router.push("/end/" + this.pickup_code);
-                            this.$toast("订单生成完毕！");
-                            console.log(res);
-                        })
-                        .catch(() => {
-                            // on cancel
-                        });
-                }
-            },
-
-            // 选择Card图片
-            onChangeImageCard() {
-                console.log("onChangeImageCard");
-            },
-
-            // 用户上传图片
-            async imageUploderCard(file) {
-                var myDate = new Date();
-                var timeStampString = String(myDate.getTime());
-
-                this.imageFileContent = file.content;
-                this.uploadImageName = timeStampString + this.user_openid;
-                console.log(this.uploadImageName);
-
-                // 上传
-                let param = new FormData(); // 创建form对象
-                param.append("file", this.imageFileContent); // 通过append向form对象添加数据
-                param.append("filename", this.uploadImageName); // 添加form表单中其他数据
-
-                // console.log('file:', param.get('file'))
-
-                // let config = {
-                //   headers: {'Content-Type': 'multipart/form-data'}
-                // }
-                // 添加请求头
-                const { data: res } = await this.$http.post(this.imageUploadUrl, param);
-                if (res.meta.status != 200) {
-                    return;
-                }
-                this.uploaderCardImageFlag = true;
-                this.$toast("图片上传成功");
             },
 
             // clearAllFormData
             clearAllFormData() {
                 // 数据初始化
                 this.stepNumber = 0;
-
                 // Product Type
-                this.productType = "名片";
-                // Form Data
-                this.body_name_card = "";
-                this.cor_name_card = "";
-                this.cor_addr_card = "";
-                this.cor_phone_card = "";
-                this.cor_email_card = "";
-                this.uploadImageName = "";
-                this.imageFileContent = "";
-
-                this.imageSelectedCard = "1";
+                this.productType = "名片夹";
                 this.imageSelectedBox1 = "1";
-                this.imageSelectedBox1 = "1";
-                this.imageSelectedKeyChain = "1";
-                this.uploaderCardImageList = [];
-                this.uploaderCardImageFlag = false;
-                this.flag = false;
-            },
-
-            // caculate length
-            caculateLength(content) {
-                var counter = 0;
-                for (var i = 0; i < content.length; i++) {
-                    var c = content.charAt(i);
-                    if (/^[\u4e00-\u9fa5]$/.test(c)) {
-                        counter += 2;
-                    } else {
-                        counter += 1;
-                    }
-                }
-                return counter;
+                this.imageSelectedBox2 = "1";
             },
         },
     };
