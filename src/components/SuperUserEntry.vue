@@ -319,7 +319,9 @@
 </script>
 
 <style scoped>
-    .productPreviewImg {
-        margin-top: 20%;
-    }
+    /* .productPreviewImg {
+        position: absolute;
+        left: 0%;
+        bottom: 10%;
+    } */
 </style>

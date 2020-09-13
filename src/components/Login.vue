@@ -33,10 +33,13 @@
                                 </van-cell>
                             </van-cell-group>
                         </van-radio-group>
-                        <!-- 产品预览区域 -->
-                        <van-image class="normalFrontImg" width="100%" fit="scale-down" :src="normalFrontImgURL">
-                            <template v-slot:error>加载失败</template>
-                        </van-image>
+                        <div class="previewImgFirst">
+                            <!-- 产品预览区域 -->
+                            <van-image class="normalFrontImg" width="100%" fit="scale-down" :src="normalFrontImgURL">
+                                <template v-slot:error>加载失败</template>
+                            </van-image>
+                        </div>
+
                     </div>
                     <!-- 底部导航区域 -->
                     <van-tabbar>
@@ -84,10 +87,13 @@
                             <van-image height="100" fit="scale-down"
                                 src="http://c2m.tq.yhlcps.com/statics/image/meet_future.jpeg" />
                         </div>
-                        <!-- 产品预览区域 -->
-                        <van-image class="normalBackImgURL" width="100%" fit="scale-down" :src="normalBackImgURL">
-                            <template v-slot:error>加载失败</template>
-                        </van-image>
+                        <div class="previewImgSecond">
+                            <!-- 产品预览区域 -->
+                            <van-image class="normalBackImgURL" width="100%" fit="scale-down" :src="normalBackImgURL">
+                                <template v-slot:error>加载失败</template>
+                            </van-image>
+                        </div>
+
 
                     </div>
 
@@ -484,15 +490,15 @@
 </script>
 
 <style scoped>
-    /* .normalFrontImg {
-        position: fixed;
-        bottom: 10%;
-        left: 25%;
+    .previewImgFirst {
+        position: absolute;
+        left: 0%;
+        bottom: 15%;
     }
 
-    .normalBackImg {
-        position: fixed;
-        bottom: 10%;
-        left: 25%;
-    } */
+    .previewImgSecond {
+        position: absolute;
+        left: 0%;
+        bottom: 15%;
+    }
 </style>
