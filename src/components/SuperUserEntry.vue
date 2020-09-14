@@ -1,5 +1,5 @@
 <template>
-    <div class="hello">
+    <div id="apply" class="hello">
         <!-- 显示当前进行到第几个步骤，stepNum来控制-->
         <van-row>
             <van-col :span="2"></van-col>
@@ -23,22 +23,24 @@
                     <van-radio-group v-model="productType">
                         <van-cell-group>
                             <van-cell clickable @click="radio = '1'">
-                                <van-radio name="名片夹">
-                                    <p>普通名片夹</p>
+                                <van-radio name="名片夹vip">
+                                    <p>皮质名片夹</p>
                                 </van-radio>
                             </van-cell>
                             <van-cell clickable @click="radio = '2'">
-                                <van-radio name="名片夹vip">
-                                    <p>皮质名片夹</p>
+                                <van-radio name="名片夹">
+                                    <p>普通名片夹</p>
                                 </van-radio>
                             </van-cell>
                         </van-cell-group>
                     </van-radio-group>
                     <!-- 产品预览区域 -->
-                    <van-image v-show="normalPreviewImgDisplay()" class="productPreviewImg" width="100%" fit="scale-down" :src="normalPreviewImgURL">
+                    <van-image v-show="normalPreviewImgDisplay()" class="productPreviewImg" width="100%"
+                        fit="scale-down" :src="normalPreviewImgURL">
                         <template v-slot:error>加载失败</template>
                     </van-image>
-                    <van-image v-show="vipPreviewImgDisplay()" class="productPreviewImg" width="100%" fit="scale-down" :src="vipPreviewImgURL">
+                    <van-image v-show="vipPreviewImgDisplay()" class="productPreviewImg" width="100%" fit="scale-down"
+                        :src="vipPreviewImgURL">
                         <template v-slot:error>加载失败</template>
                     </van-image>
                     <!-- 底部导航区域 -->
@@ -71,10 +73,28 @@
                                     图片
                                 </van-radio>
                             </van-cell>
-                            <van-cell clickable @click="radio = '1'">
+                            <van-cell clickable @click="radio = '2'">
                                 <!-- 2.2 文字输入 -->
-                                <van-radio name="text">
-                                    文字
+                                <van-radio name="text1">
+                                    文字: "边缘协同生产"
+                                </van-radio>
+                            </van-cell>
+                            <van-cell clickable @click="radio = '3'">
+                                <!-- 2.2 文字输入 -->
+                                <van-radio name="text2">
+                                    文字: "5G智能制造"
+                                </van-radio>
+                            </van-cell>
+                            <van-cell clickable @click="radio = '4'">
+                                <!-- 2.2 文字输入 -->
+                                <van-radio name="text3">
+                                    文字: "5G智慧工厂"
+                                </van-radio>
+                            </van-cell>
+                            <van-cell clickable @click="radio = '5'">
+                                <!-- 2.2 文字输入 -->
+                                <van-radio name="text_cust">
+                                    自定义文字
                                 </van-radio>
                             </van-cell>
                         </van-cell-group>
@@ -92,7 +112,7 @@
                     </div>
 
                     <!-- 底部导航 -->
-                    <van-tabbar>
+                    <van-tabbar v-show="inputPageNavigatorDisplayBoolean">
                         <van-tabbar-item>
                             <van-button type="info" @click="onClickPreviousStep">
                                 上一步
@@ -137,6 +157,9 @@
         data() {
             return {
                 pickup_code: "",
+                inputPageNavigatorDisplayBoolean: true,
+                defaultHeight: '0',  //默认屏幕高度
+                nowHeight: '0',  //实时屏幕高度
 
                 normalPreviewImgURL: "http://c2m.tq.yhlcps.com/statics/c2m/general_cardcase_preview.jpg",
                 vipPreviewImgURL: "http://c2m.tq.yhlcps.com/statics/c2m/vip_cardcase_preview.jpg",
@@ -151,7 +174,7 @@
                 china_telecom_URL: "http://c2m.tq.yhlcps.com/statics/image/china_telecom.jpeg",
 
                 // 控制Product Type选择器, 名片夹/名片夹vip
-                productType: "名片夹",
+                productType: "名片夹vip",
                 user_openid: "user_open_id",
 
                 // Form Data Box
@@ -171,10 +194,27 @@
             const openid = this.$route.params.openid;
             this.user_openid = openid;
             console.log('vip:' + this.user_openid)
+
+            // this.defaultHeight = $(window).height();
+            this.defaultHeight = window.innerHeight
+            window.onresize = () => {
+                return (() => {
+                    // this.nowHeight = $(window).height();
+                    this.nowHeight = window.innerHeight
+                })();
+            };
+
+
         },
         methods: {
+            testOnFocus() {
+                this.inputPageNavigatorDisplayBoolean = false
+            },
+            testOnBlur() {
+                this.inputPageNavigatorDisplayBoolean = true
+            },
             textDisplayBoolean() {
-                if (this.imageSelectedBox2 == "text") {
+                if (this.imageSelectedBox2 == "text_cust") {
                     return true
                 } else {
                     return false
@@ -203,14 +243,14 @@
                 }
             },
 
-            normalPreviewImgDisplay(){
+            normalPreviewImgDisplay() {
                 if (this.productType == "名片夹") {
                     return true
                 } else {
                     return false
                 }
             },
-            vipPreviewImgDisplay(){
+            vipPreviewImgDisplay() {
                 if (this.productType == "名片夹vip") {
                     return true
                 } else {
@@ -258,8 +298,14 @@
                     }).then(async () => {
                         // on confirm
                         var data = ""
-                        if (this.imageSelectedBox2 === "text") {
+                        if (this.imageSelectedBox2 === "text_cust") {
                             data = this.front_box
+                        } else if (this.imageSelectedBox2 === "text1") {
+                            data = "边缘协同生产"
+                        } else if (this.imageSelectedBox2 === "text2") {
+                            data = "5G智能制造"
+                        } else if (this.imageSelectedBox2 === "text3") {
+                            data = "5G智慧工厂"
                         } else if (this.imageSelectedBox2 === "image") {
                             data = "logo2"
                         } else {
@@ -314,11 +360,27 @@
                 // Option2 text or image
                 this.imageSelectedBox2 = "1";
             },
+        },
+
+        watch: {
+            nowHeight: function () {
+                if (this.defaultHeight != this.nowHeight) {
+                    //键盘弹出操作
+                    this.inputPageNavigatorDisplayBoolean = false
+                } else {
+                    //键盘不弹出操作
+                    this.inputPageNavigatorDisplayBoolean = true
+                }
+            }
         }
     };
 </script>
 
 <style scoped>
+    .focusState {
+        position: absolute;
+    }
+
     /* .productPreviewImg {
         position: absolute;
         left: 0%;
